@@ -40,7 +40,7 @@ Srate = float(config['Data_Sample']['Minion_sample_rate'])
 
 Sf = 1/Srate
 
-TotalSamples = Stime*60*60*Srate
+TotalSamples = Stime*60*Srate
 
 firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","rb")
 samp_time = pickle.load(firstp)
