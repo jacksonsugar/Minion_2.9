@@ -89,4 +89,3 @@ while(Sample_number > i):
     time.sleep(Sf)
 
 ser.write(b'mode0000\r')
-exit(0)

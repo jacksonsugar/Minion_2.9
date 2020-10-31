@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import RPi.GPIO as GPIO
 import tsys01
 import ms5837
 import time
@@ -10,6 +11,13 @@ import pickle
 NumSamples = 0
 
 samp_count = 1
+
+data_rec = 16
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(data_rec, GPIO.OUT)
+GPIO.output(data_rec, 1)
 
 def str2bool(v):
     return v.lower() in ("yes","true",'1','t')
@@ -148,4 +156,4 @@ while NumSamples <= TotalSamples:
     time.sleep(Sf)
 
 file.close()
-exit(0)
+GPIO.output(data_rec, 0)

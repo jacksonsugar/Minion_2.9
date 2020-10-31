@@ -23,14 +23,12 @@ def str2bool(v):
 def check_wifi():
 
     if "Minion_Hub" in os.popen(iwlist).read():
-        print("WIFI!!")
         status = "Connected"
         net_status = os.popen(net_cfg).read()
         if ".Minion" in net_status:
             os.system(ifswitch)
         else:
             print("You have Minions!")
-        return status
 
     else:
         print("No WIFI found.")
@@ -39,15 +37,26 @@ def check_wifi():
     print(status)
     return status
 
-samp_time = os.popen("sudo hwclock -u -r").read()
-samp_time = samp_time.split('.',1)[0]
-samp_time = samp_time.replace("  ","_")
-samp_time = samp_time.replace(" ","_")
-samp_time = samp_time.replace(":","-")
+def kill_sampling(scriptNames):
 
-firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","wb")
-pickle.dump(samp_time, firstp)
-firstp.close()
+    for script in scriptNames:
+        os.system("sudo pkill -9 -f {}".format(script))
+
+def update_time():
+    try:
+        samp_time = os.popen("sudo hwclock -u -r").read()
+        samp_time = samp_time.split('.',1)[0]
+        samp_time = samp_time.replace("  ","_")
+        samp_time = samp_time.replace(" ","_")
+        samp_time = samp_time.replace(":","-")
+
+        firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","wb")
+        pickle.dump(samp_time, firstp)
+        firstp.close()
+    except:
+        print("update time failed")
+
+update_time()
 
 i = 0
 light = 12
@@ -107,20 +116,18 @@ ping_hub = "ping 192.168.0.1 -c 1"
 
 ping_google = "ping google.com -c 1"
 
-subpkill = "sudo killall python"
-
 ps_test = "pgrep -a python"
 
-scriptNames = ["Temp.py", "TempPres.py", "Minion_image.py","OXYBASE_RS232.py","ACC_100Hz.py","Extended_Sampler.py"]
+scriptNames = ["Temp.py", "TempPres.py", "Minion_image.py","OXYBASE_RS232.py","ACC_100Hz.py","Extended_Sampler.py","TempPres_IF.py","OXYBASE_RS232_IF.py","ACC_100Hz_IF.py"]
 
 if __name__ == '__main__':
 
     if len(os.listdir('{}/minion_pics'.format(configDir))) == 0 and len(os.listdir('{}/minion_data/INI'.format(configDir))) == 0:
-        os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py')
+        os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
 
     elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples or len(os.listdir('{}/minion_data'.format(configDir))) >= TotalSamples:
         GPIO.output(Press_IO, 0)
-        os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py')
+        os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
 
     else:
         if iniTpp == True:
@@ -135,18 +142,20 @@ if __name__ == '__main__':
         if iniAcc == True:
             os.system('sudo python /home/pi/Documents/Minion_scripts/ACC_100Hz.py &')
 
+    time.sleep(5)
+
     while(any(x in os.popen(ps_test).read() for x in scriptNames)) == True:
 
     ## Check for wifi
 
         if check_wifi() == "Connected":
             flash()
-            os.system(subpkill)
+            kill_sampling(scriptNames)
             exit(0)
 
         else:
             print("Sampling")
-            time.sleep(10)
+            time.sleep(Stime*60)
 
     print('Goodbye')
     GPIO.output(wifi, 0)

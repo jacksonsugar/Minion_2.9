@@ -142,4 +142,3 @@ while NumSamples <= TotalSamples:
     time.sleep(Sf)
 
 file.close()
-exit(0)

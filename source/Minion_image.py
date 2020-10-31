@@ -54,4 +54,4 @@ if __name__ == '__main__':
     GPIO.setup(light, GPIO.OUT)
     GPIO.setup(power, GPIO.OUT)
     picture()
-    exit(0)
+

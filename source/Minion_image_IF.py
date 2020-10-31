@@ -14,6 +14,8 @@ samp_count = 1
 light = 12
 power = 32
 
+sampNum = [0]
+
 camera = PiCamera()
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
@@ -39,7 +41,7 @@ if len(os.listdir('{}/minion_pics'.format(configDir))) == 0:
 
     for dataNum in os.listdir('{}/minion_data/INI/'.format(configDir)):
         if dataNum.endswith('_Pic-INI.jpg'):
-            samp_count = samp_count + 1
+            sampNum.append(int(dataNum.split("-",1)[0]))
 
 else:
 
@@ -49,24 +51,27 @@ else:
 
     for dataNum in os.listdir('{}/minion_data/FIN/'.format(configDir)):
         if dataNum.endswith('_Pic-FIN.jpg'):
-            samp_count = samp_count + 1      
+            sampNum.append(int(dataNum.split("-",1)[0]))
+
+samp_count = max(sampNum) + 1    
 
 TotalSamples = Stime*(60/Srate)
 
 def update_time():
-    samp_time = os.popen("sudo hwclock -u -r").read()
-    samp_time = samp_time.split('.',1)[0]
-    samp_time = samp_time.replace("  ","_")
-    samp_time = samp_time.replace(" ","_")
-    samp_time = samp_time.replace(":","-")
+    try:
+        samp_time = os.popen("sudo hwclock -u -r").read()
+        samp_time = samp_time.split('.',1)[0]
+        samp_time = samp_time.replace("  ","_")
+        samp_time = samp_time.replace(" ","_")
+        samp_time = samp_time.replace(":","-")
 
-    firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","wb")
-    pickle.dump(samp_time, firstp)
-    firstp.close()
+        firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","wb")
+        pickle.dump(samp_time, firstp)
+        firstp.close()
+    except:
+        print("update time failed")
 
 def picture(configDir, NumSamples, RECOVER):
-        # Collect time value from pickle on desktop
-        update_time()
 
         firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","rb")
         samp_time = pickle.load(firstp)
@@ -85,9 +90,10 @@ def picture(configDir, NumSamples, RECOVER):
         else:      
 
             samp_time = "{}-{}-{}".format(samp_count, NumSamples, samp_time)
-            camera.capture('{}/minion_data/INI/{}_Pic-FIN.jpg'.format(configDir, samp_time))
+            camera.capture('{}/minion_data/FIN/{}_Pic-FIN.jpg'.format(configDir, samp_time))
         
         time.sleep(1)
+        print("Image : {}".format(samp_time))
         camera.stop_preview()
         GPIO.output(light, 0)
 
@@ -95,10 +101,12 @@ picture(configDir, NumSamples, RECOVER)
 # Spew readings
 while NumSamples <= TotalSamples:
 
+
     NumSamples = NumSamples + 1
 
     time.sleep(Srate*60)
 
+    update_time()
+
     picture(configDir, NumSamples, RECOVER)
 
-exit(0)

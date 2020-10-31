@@ -65,6 +65,6 @@ time.sleep(1)
 os.system('sudo service dhcpcd restart')
 
 print "Done!"
-exit(0)
+
 # yay.
 
