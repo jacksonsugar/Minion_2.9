@@ -72,7 +72,7 @@ def update_time():
         print("update time failed")
 
 def picture(configDir, NumSamples, RECOVER):
-
+    try:
         firstp = open("/home/pi/Documents/Minion_scripts/timesamp.pkl","rb")
         samp_time = pickle.load(firstp)
 
@@ -96,6 +96,12 @@ def picture(configDir, NumSamples, RECOVER):
         print("Image : {}".format(samp_time))
         camera.stop_preview()
         GPIO.output(light, 0)
+
+    except:
+        camera.stop_preview()
+        GPIO.output(light, 0)
+        print("Camera Error")
+
 
 picture(configDir, NumSamples, RECOVER)
 # Spew readings
