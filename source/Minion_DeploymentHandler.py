@@ -60,7 +60,7 @@ update_time()
 
 i = 0
 light = 12
-wifi = 7
+wifi = 22
 Press_IO = 11
 
 GPIO.setwarnings(False)
