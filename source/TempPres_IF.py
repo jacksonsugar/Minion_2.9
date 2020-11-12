@@ -4,7 +4,6 @@ import tsys01
 import ms5837
 import time
 import os
-import serial
 import configparser
 import pickle
 
@@ -79,8 +78,8 @@ if iniTmp == True:
 sensor = ms5837.MS5837_30BA() # Default I2C bus is 1 (Raspberry Pi 3)
 
 if not sensor.init():
-        print("Sensor could not be initialized")
-        exit(1)
+    print("Sensor could not be initialized")
+    exit(1)
 
 # We have to read values from sensor to update pressure and temperature
 if not sensor.read():
@@ -109,12 +108,12 @@ file = open(file_name,"a+")
 
 if iniTmp == True:
 
-    file.write("T+P INI @ %s\r\n" % samp_time)
+    file.write("T+P MS5837_30BA and TempTSYS01 @ %s\r\n" % samp_time)
     file.write("Pressure(mbar), Temp(C), TempTSYS01(C) \r\n")
 
 else:
 
-    file.write("T+P INI @ %s\r\n" % samp_time)
+    file.write("T+P MS5837_30BA @ %s\r\n" % samp_time)
     file.write("Pressure(mbar),Temp(C) \r\n")
 
 file.close()

@@ -1,6 +1,12 @@
 import minsat
 from minsat import MinSat
 
+ex_msg = "Example 4 - Acquiring a GPS Position with enhanced verbosity"
+
+print("-"*len(ex_msg))
+print(ex_msg)
+print("-"*len(ex_msg))
+
 gps_port = "/dev/ttySC0"
 gps_baud = 9600
 modem_port = "/dev/ttySC1"
@@ -25,13 +31,6 @@ def display_gps_resp_struct(ret_info):
     print("="*50)
 
 
-(okay,ret_data) = m1.sbd_send_position(verbose=False,maintain_gps_pwr=True,gps_timeout=120)
+ret_data = m1.gps_get_position(verbose=True)
+display_gps_resp_struct(ret_data)
 
-if okay and ret_data.valid_position:
-    print("Valid GPS Position Acquired & Transmitted via Iridium.")
-    display_gps_resp_struct(ret_data)
-elif not okay and  not ret_data.valid_position:
-    print("Could not acquire a valid GPS Position.")
-elif not okay and ret_data.valid_position:
-    print("Valid GPS Position Acquired - Could Not Transmit the Position via Irdium.")
-    display_gps_resp_struct(ret_data)

@@ -27,9 +27,9 @@ try :
     float(test_string)
     Stime = float(Stime)
 except :
-    Stime = float(.25)
+    Stime = float(.2)
 
-TotalSamples = Stime*60*60*100
+TotalSamples = Stime*60*100
 
 #Configure ADXL345
 accel = Adafruit_ADXL345.ADXL345()

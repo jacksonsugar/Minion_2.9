@@ -51,6 +51,7 @@ def picture():
         print("Camera error")
         camera.stop_preview()
         GPIO.output(light, 0)
+        
 if __name__ == '__main__':
 
     camera = PiCamera()

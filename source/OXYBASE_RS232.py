@@ -34,11 +34,11 @@ try :
     float(test_string)
     Stime = float(Stime)
 except :
-    Stime = float(.25)
+    Stime = float(.2)
 
 Srate = float(config['Data_Sample']['Oxygen_sample_rate'])
 
-Sample_number = (Stime*60)*Srate
+Sample_number = Stime*60*Srate
 Sf = 1/Srate
 
 time.sleep(1)

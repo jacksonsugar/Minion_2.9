@@ -57,7 +57,7 @@ else:
 
     file_name = "{}/minion_data/FIN/{}_OXY-FIN.txt".format(configDir, samp_time)
 
-Sample_number = (Stime*3600)
+Sample_number = (Stime*3600*Srate)
 Sf = 1/Srate
 
 time.sleep(1)

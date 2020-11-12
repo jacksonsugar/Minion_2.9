@@ -59,16 +59,16 @@ def update_time():
 update_time()
 
 i = 0
+wifi = 7
 light = 12
-wifi = 22
-Press_IO = 11
+328_IO = 11
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(light, GPIO.OUT)
 GPIO.setup(wifi, GPIO.OUT)
-GPIO.setup(Press_IO, GPIO.OUT)
-GPIO.output(Press_IO, 1)
+GPIO.setup(328_IO, GPIO.OUT)
+GPIO.output(328_IO, 1)
 GPIO.output(wifi, 1)
 
 data_config = configparser.ConfigParser()
@@ -88,7 +88,7 @@ try:
     float(test_string)
     Stime = float(Stime)
 except:
-    Stime = float(.25)
+    Stime = float(.2)
 
 Srate = float(config['Sleep_cycle']['Minion_sleep_cycle'])
 
@@ -118,16 +118,16 @@ ping_google = "ping google.com -c 1"
 
 ps_test = "pgrep -a python"
 
-scriptNames = ["Temp.py", "TempPres.py", "Minion_image.py","OXYBASE_RS232.py","ACC_100Hz.py","Extended_Sampler.py","TempPres_IF.py","OXYBASE_RS232_IF.py","ACC_100Hz_IF.py"]
+scriptNames = ["TempPres.py", "Minion_image.py","OXYBASE_RS232.py","ACC_100Hz.py","Extended_Sampler.py","Recovery_Sampler.py","TempPres_IF.py","OXYBASE_RS232_IF.py","ACC_100Hz_IF.py","Iridium_gps.py","Iridium_data.py"]
 
 if __name__ == '__main__':
 
     if len(os.listdir('{}/minion_pics'.format(configDir))) == 0 and len(os.listdir('{}/minion_data/INI'.format(configDir))) == 0:
         os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
 
-    elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples or len(os.listdir('{}/minion_data'.format(configDir))) >= TotalSamples:
-        GPIO.output(Press_IO, 0)
-        os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
+    elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples:
+        GPIO.output(328_IO, 0)
+        os.system('sudo python /home/pi/Documents/Minion_scripts/Recovery_Sampler.py &')
 
     else:
         if iniTpp == True:
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
         else:
             print("Sampling")
-            time.sleep(Stime*60)
+            time.sleep(Stime*30)
 
     print('Goodbye')
     GPIO.output(wifi, 0)

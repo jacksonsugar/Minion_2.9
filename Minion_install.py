@@ -112,7 +112,7 @@ else:
 USBdata = yes_no('Do you wish to configure a USB storage device? (NTFS file system) [Y/N]: ')
 os.system('sudo mkdir /home/pi/Documents/Minion_scripts /home/pi/Documents/Minion_tools')
 # Move the deployment handler so it knows where to look for config file
-os.system('sudo cp source/Data_config.ini source/Minion_DeploymentHandler.py source/Minion_image.py source/Extended_Sampler.py source/OXYBASE_RS232.py source/TempPres.py source/ACC_100Hz.py source/ACC_100Hz_IF.py source/TempPres_IF.py source/Minion_image_IF.py source/OXYBASE_RS232_IF.py /home/pi/Documents/Minion_scripts')
+os.system('sudo cp source/Data_config.ini source/Minion_DeploymentHandler.py source/Minion_image.py source/Extended_Sampler.py source/Recovery_Sampler.py source/OXYBASE_RS232.py source/TempPres.py source/ACC_100Hz.py source/ACC_100Hz_IF.py source/TempPres_IF.py source/Minion_image_IF.py source/OXYBASE_RS232_IF.py source/Minsat/minsat.py source/Minsat/SC16IS753GPIO.so source/Iridium_gps.py source/Iridium_data.py /home/pi/Documents/Minion_scripts')
 
 if USBdata == True:
 
@@ -168,9 +168,9 @@ else:
 
 # Set up external software and raspi-config
 # Get updates
-#os.system('sudo apt-get update && sudo apt-get upgrade -y')
+#os.system('sudo apt-get update && sudo apt-get upgrade -y') 
 # Get needed packages
-os.system('sudo apt-get install build-essential python-smbus i2c-tools avrdude')
+os.system('sudo apt-get install build-essential python-smbus i2c-tools avrdude -y')
 # raspi-config
 #os.system('sudo raspi-config nonint do_change_locale en_IS.UTF-8')
 os.system('sudo raspi-config nonint do_boot_behaviour B2')
@@ -202,8 +202,14 @@ os.chdir(ini_dir)
 
 # Set up and sync RTC
 print("Appending /boot/config.txt")
+os.system("echo 'dtoverlay=dwc2' >> /boot/config.txt")
 os.system("echo 'dtoverlay=i2c-rtc,ds3231' >> /boot/config.txt")
+os.system("echo 'dtoverlay=sc16is752-i2c,int_pin=16,addr=0x49' >> /boot/config.txt")
+os.system("echo 'dtoverlay=i2c_baudrate=400000' >> /boot/config.txt")
 os.system("echo 'enable_uart=1' >> /boot/config.txt")
+
+print("Appending to /boot/cmdline.txt")
+os.system("echo 'modules-load=dwc2,g_ether plymoth.ignore-serial-consoles' >> /boot/cmdline.txt")
 
 # Move scripts to local build
 os.system('sudo cp source/Keep_Me_Alive.py source/dhcp-configure.py source/dhcp-switch.py source/RTC_Finish.py source/RTC-set.py source/Shutdown.py source/flasher.py source/Iridium_gps.py source/FishTag_data.py /home/pi/Documents/Minion_tools/')
