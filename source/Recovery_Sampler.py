@@ -11,6 +11,10 @@ import sys
 
 BURN = 33
 
+samp_count = 1
+
+NumSamples = 0
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(BURN, GPIO.OUT)
