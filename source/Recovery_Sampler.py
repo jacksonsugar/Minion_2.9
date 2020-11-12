@@ -115,7 +115,7 @@ if __name__ == '__main__':
             os.system('sudo python /home/pi/Documents/Minion_scripts/ACC_100Hz_IF.py &')
 
         # Spew readings
-        while NumSamples <= TotalSamples:
+        while(NumSamples <= TotalSamples or Pres_ini >= 1500):
 
             if sensor.read():
                 print("P: %0.1f mbar  %0.3f atm\tT: %0.2f C") % (
@@ -127,7 +127,9 @@ if __name__ == '__main__':
                 print('Sensor ded')
                 file.write('Sensor fail')
                 exit(1)
-
+              
+            Pres_ini = sensor.pressure()
+            
             file = open(file_name,"a")
 
             if iniTmp == True:
