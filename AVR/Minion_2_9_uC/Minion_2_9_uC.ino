@@ -131,14 +131,14 @@ void loop(void)
       //This is the sleep cycle! Set for 180 cycles of 10 seconds for 30 minutes
       for (int i = 1; i <= 180; i++){
         LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
-        strobe()
+        strobe();
       }
 
       if (Extend_Sleep == 1){
         //This is the sleep cycle! Set for 180 cycles of 10 seconds for 30 MORE minutes asleep
         for (int i = 1; i <= 180; i++){
           LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
-          strobe()
+          strobe();
         }
       }
     }
