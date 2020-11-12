@@ -6,7 +6,7 @@ import os
 import math
 import random
 #Load the shared object file for GPIO Drivers
-gpio =  CDLL('./SC16IS752GPIO.so')
+gpio =  CDLL('/home/pi/Documents/Minion_scripts/SC16IS752GPIO.so')
 
 #Definitions
 OUT = 1
