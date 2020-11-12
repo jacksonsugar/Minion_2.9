@@ -101,7 +101,7 @@ if __name__ == '__main__':
         GPIO.output(Burn,1)
         os.system('sudo python /home/pi/Documents/Minion_scripts/Iridium_gps.py')
 
-    elif Pres_ini >= 3:
+    elif Pres_ini >= 2000:
         GPIO.output(BURN,1)
 
         if iniImg == True:
