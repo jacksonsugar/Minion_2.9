@@ -3,27 +3,32 @@
 int WIFI_SIG = 3;
 int Pi_on = 5;
 int IO = 6;
-int LED = 7;
+int Sampling_LED = 7;
 int STROBE = 9;
 
+
 int RECOVER = 0;
+int Extend_Sleep = 0;
+int SAMPLES = 0;
+int MAX_Sample_Num = 3000;
+
 
 void setup(void)
 {
   pinMode(WIFI_SIG, INPUT_PULLUP);
-  pinMode(Pi_on, OUTPUT);
   pinMode(IO, INPUT_PULLUP);
-  pinMode(LED, OUTPUT);
+  pinMode(Pi_on, OUTPUT); 
+  pinMode(Sampling_LED, OUTPUT);
   pinMode(STROBE, OUTPUT);
 
   digitalWrite(Pi_on, LOW);
-  digitalWrite(LED, LOW);
+  digitalWrite(Sampling_LED, LOW);
   digitalWrite(STROBE, LOW);
 
-  for (int i = 0; i < 3; i++) {
-    digitalWrite(LED, HIGH);
+  for(int i = 0; i < 3; i++){
+    digitalWrite(Sampling_LED, HIGH);
     delay(400);
-    digitalWrite(LED, LOW);
+    digitalWrite(Sampling_LED, LOW);
     delay(100);
   }
 }
@@ -31,27 +36,27 @@ void setup(void)
 void Pi_Samp() {
   digitalWrite(Pi_on, HIGH);
 
-  for (int i = 1; i <= 12; i++) {
+  for (int i = 1; i <= 12; i++){
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
   }
 
   int WIFI_Status = digitalRead(WIFI_SIG);
-  int Press_Status = digitalRead(IO);
+  int Mission_Status = digitalRead(IO);
 
   do {
-    digitalWrite(LED, HIGH);
+    digitalWrite(Sampling_LED, HIGH);
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
     WIFI_Status = digitalRead(WIFI_SIG);
-    Press_Status = digitalRead(IO);
-    if (Press_Status == LOW) {
+    Mission_Status = digitalRead(IO);
+    if (Mission_Status == LOW){
       RECOVER = 1;
     }
   }
   while (WIFI_Status == HIGH);
 
-  digitalWrite(LED, LOW);
+  digitalWrite(Sampling_LED, LOW);
 
-  for (int i = 1; i <= 5; i++) {
+  for (int i = 1; i <= 5; i++){
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
   }
 
@@ -62,30 +67,28 @@ void Pi_Samp_RECOVER() {
 
   digitalWrite(Pi_on, HIGH);
 
-  for (int i = 1; i <= 12; i++) {
+  for (int i = 1; i <= 12; i++){
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
-    strobe();
   }
 
   int WIFI_Status = digitalRead(WIFI_SIG);
-  int Press_Status = digitalRead(IO);
+  int Mission_Status = digitalRead(IO);
 
   do {
-    digitalWrite(LED, HIGH);
+    digitalWrite(Sampling_LED, HIGH);
     strobe();
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
     WIFI_Status = digitalRead(WIFI_SIG);
-    Press_Status = digitalRead(IO);
-    if (Press_Status == LOW) {
-      RECOVER = 1;
+    Mission_Status = digitalRead(IO);
+    if (Mission_Status == LOW){
+      Extend_Sleep = 1;
     }
   }
   while (WIFI_Status == HIGH);
 
-  digitalWrite(LED, LOW);
+  digitalWrite(Sampling_LED, LOW);
 
-  for (int i = 1; i <= 5; i++) {
-    strobe();
+  for (int i = 1; i <= 5; i++){
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
   }
 
@@ -97,31 +100,60 @@ void strobe() {
   digitalWrite(STROBE, HIGH);
   delay(100);
   digitalWrite(STROBE, LOW);
-  delay(100);
-  digitalWrite(STROBE, HIGH);
-  delay(50);
-  digitalWrite(STROBE, LOW);
-  LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
+  delay(400);
 
+  digitalWrite(STROBE, HIGH);
+  delay(250);
+  digitalWrite(STROBE, LOW);
+  delay(750);
+
+  digitalWrite(STROBE, HIGH);
+  delay(100);
+  digitalWrite(STROBE, LOW);
+  delay(400);
 }
 
-void loop(void)
+void loop(void) 
 {
 
   Pi_Samp();
 
-  if (RECOVER == 1) {
-    while (1) {
+  SAMPLES = SAMPLES + 1;
+
+  if (RECOVER == 1 || SAMPLES > MAX_Sample_Num) {
+
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+    RECOVER = 0;
+
+    while(1) {
       Pi_Samp_RECOVER();
-      //This is the sleep cycle! Set for 150 cycles of 4 seconds for 10 minutes
-      for (int i = 1; i <= 300; i++) {
-        strobe();
+
+      //This is the sleep cycle! Set for 180 cycles of 10 seconds for 30 minutes
+      for (int i = 1; i <= 180; i++){
+        LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+        strobe()
+      }
+
+      if (Extend_Sleep == 1){
+        //This is the sleep cycle! Set for 180 cycles of 10 seconds for 30 MORE minutes asleep
+        for (int i = 1; i <= 180; i++){
+          LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+          strobe()
+        }
       }
     }
   }
-  //This is the sleep cycle! Set for 150 cycles of 4 seconds for 10 minutes
-  for (int i = 1; i <= 225; i++) {
+  //This is the sleep cycle! Set for 225 cycles of 4 seconds for 15 minutes
+  for (int i = 1; i <= 225; i++){
     LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
   }
 
 }
+
+
+
+
+
+
+
+
