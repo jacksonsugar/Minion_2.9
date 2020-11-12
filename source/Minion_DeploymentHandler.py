@@ -61,14 +61,14 @@ update_time()
 i = 0
 wifi = 7
 light = 12
-328_IO = 11
+IO328 = 11
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(light, GPIO.OUT)
 GPIO.setup(wifi, GPIO.OUT)
-GPIO.setup(328_IO, GPIO.OUT)
-GPIO.output(328_IO, 1)
+GPIO.setup(IO328, GPIO.OUT)
+GPIO.output(IO328, 1)
 GPIO.output(wifi, 1)
 
 data_config = configparser.ConfigParser()
@@ -126,7 +126,7 @@ if __name__ == '__main__':
         os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
 
     elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples:
-        GPIO.output(328_IO, 0)
+        GPIO.output(IO328, 0)
         os.system('sudo python /home/pi/Documents/Minion_scripts/Recovery_Sampler.py &')
 
     else:
