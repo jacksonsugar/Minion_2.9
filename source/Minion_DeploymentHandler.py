@@ -59,7 +59,7 @@ def update_time():
 update_time()
 
 i = 0
-wifi = 7
+wifi = 22
 light = 12
 IO328 = 11
 
