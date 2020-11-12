@@ -78,9 +78,6 @@ print("Temperature: %.2f C") % (sensor.temperature(ms5837.UNITS_Centigrade))
 
 time.sleep(1)
 
-try:
-
-
 file = open(file_name,"a+")
 
 if iniTmp == True:
