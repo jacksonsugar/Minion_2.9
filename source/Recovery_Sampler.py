@@ -15,6 +15,8 @@ samp_count = 1
 
 NumSamples = 0
 
+ps_test = "pgrep -a python"
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(BURN, GPIO.OUT)
