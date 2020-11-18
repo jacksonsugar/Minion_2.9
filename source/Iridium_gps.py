@@ -35,3 +35,5 @@ elif not okay and  not ret_data.valid_position:
 elif not okay and ret_data.valid_position:
     print("Valid GPS Position Acquired - Could Not Transmit the Position via Irdium.")
     display_gps_resp_struct(ret_data)
+    
+m1.gps_pwr(m1.dev_off)

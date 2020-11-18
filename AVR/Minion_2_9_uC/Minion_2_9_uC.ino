@@ -123,6 +123,7 @@ void loop(void)
   if (RECOVER == 1 || SAMPLES > MAX_Sample_Num) {
 
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+    RECOVER = 0;
 
     while(1) {
       Pi_Samp_RECOVER();

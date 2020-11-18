@@ -14,16 +14,28 @@ samp_count = 1
 def str2bool(v):
     return v.lower() in ("yes","true",'1','t')
 
+def abortMission(configLoc):
+
+    abortConfig = configparser.ConfigParser()
+    abortConfig.read(configLoc)
+    abortConfig.set('Mission','Abort','1')
+    with open(config,'wb') as abortFile:
+        abortConfig.write(abortFile)
+
+    GPIO.output(IO328, 0)
+    os.system('sudo python /home/pi/Documents/Minion_scripts/Recovery_Sampler.py &')
+
 data_config = configparser.ConfigParser()
 data_config.read('/home/pi/Documents/Minion_scripts/Data_config.ini')
 
 configDir = data_config['Data_Dir']['Directory']
 
 config = configparser.ConfigParser()
-configloc = '{}/Minion_config.ini'.format(configDir)
+configLoc = '{}/Minion_config.ini'.format(configDir)
 
-config.read(configloc)
-
+config.read(configLoc)
+MAX_Depth = float(config['Mission']['Max_Depth'])
+MAX_Depth = MAX_Depth*100.4  # Convert from meters to mBar
 iniTpp = str2bool(config['Sampling_scripts']['TempPres'])
 iniTmp = str2bool(config['Sampling_scripts']['Temperature'])
 
@@ -116,6 +128,10 @@ while NumSamples <= TotalSamples:
         print('Sensor ded')
         file.write('Sensor fail')
         exit(1)
+
+    if sensor.pressure() >= MAX_Depth:
+        file.write("Minion Exceeded Depth Maximum!")
+        abortMission(configLoc)
 
     file = open(file_name,"a")
 

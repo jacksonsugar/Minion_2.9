@@ -23,6 +23,26 @@ GPIO.output(BURN, 0)
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
 
+def abortMission(configLoc):
+
+    abortConfig = configparser.ConfigParser()
+    abortConfig.read(configLoc)
+    abortConfig.set('Mission','Abort','1')
+    with open(config,'wb') as abortFile:
+        abortConfig.write(abortFile)
+
+def kill_sampling(scriptNames):
+
+    for script in scriptNames:
+        os.system("sudo pkill -9 -f {}".format(script))
+
+scriptNames = ["TempPres.py", "Minion_image.py","Minion_image_IF.py","OXYBASE_RS232.py","ACC_100Hz.py","Extended_Sampler.py","TempPres_IF.py","OXYBASE_RS232_IF.py","ACC_100Hz_IF.py","Iridium_gps.py","Iridium_data.py"]
+
+
+if(any(x in os.popen(ps_test).read() for x in scriptNames)) == True:
+
+    kill_sampling(scriptNames)
+
 data_config = configparser.ConfigParser()
 data_config.read('/home/pi/Documents/Minion_scripts/Data_config.ini')
 
@@ -30,7 +50,7 @@ configDir = data_config['Data_Dir']['Directory']
 configLoc = '{}/Minion_config.ini'.format(configDir)
 config = configparser.ConfigParser()
 config.read(configLoc)
-
+Abort = str2bool(config['Mission']['Abort'])
 iniImg = str2bool(config['Sampling_scripts']['Image'])
 iniTpp = str2bool(config['Sampling_scripts']['TempPres'])
 iniTmp = str2bool(config['Sampling_scripts']['Temperature'])
@@ -60,9 +80,9 @@ if iniTmp == True:
     sensor_temp = tsys01.TSYS01()
 
     # We must initialize the sensor before reading it
-    if not sensor_temp.init():
-        print("Error initializing sensor")
-        exit(1)
+if not sensor_temp.init():
+    print("Error initializing sensor")
+    exit(1)
 
 sensor = ms5837.MS5837_30BA() # Default I2C bus is 1 (Raspberry Pi 3)
 
@@ -71,9 +91,9 @@ if not sensor.init():
     exit(1)
 
 # We have to read values from sensor to update pressure and temperature
-if sensor.read():
+try sensor.read():
     Pres_ini = sensor.pressure()
-else:
+except:
     Pres_ini = "Broken"
 
 print("Pressure: {} Bar").format(Pres_ini)
@@ -100,9 +120,13 @@ if __name__ == '__main__':
 
     if Pres_ini == "Broken":
         GPIO.output(Burn,1)
+        abortMission(configLoc)
         os.system('sudo python /home/pi/Documents/Minion_scripts/Iridium_gps.py')
 
-    elif Pres_ini >= 2000:
+    if Abort == True:
+        GPIO.output(Burn,1)
+
+    if Pres_ini >= 1500:
         GPIO.output(BURN,1)
 
         if iniImg == True:
@@ -152,6 +176,7 @@ if __name__ == '__main__':
             time.sleep(Sf)
 
         file.close()
+        os.system('sudo python /home/pi/Documents/Minion_scripts/Iridium_gps.py')
         GPIO.output(data_rec, 0)
 
     else:

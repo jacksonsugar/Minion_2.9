@@ -91,7 +91,7 @@ except:
     Stime = float(.2)
 
 Srate = float(config['Sleep_cycle']['Minion_sleep_cycle'])
-
+Abort = str2bool(config['Mission']['Abort'])
 iniImg = str2bool(config['Sampling_scripts']['Image'])
 iniTpp = str2bool(config['Sampling_scripts']['TempPres'])
 iniTmp = str2bool(config['Sampling_scripts']['Temperature'])
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     if len(os.listdir('{}/minion_pics'.format(configDir))) == 0 and len(os.listdir('{}/minion_data/INI'.format(configDir))) == 0:
         os.system('sudo python /home/pi/Documents/Minion_scripts/Extended_Sampler.py &')
 
-    elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples:
+    elif len(os.listdir('{}/minion_pics'.format(configDir))) >= TotalSamples or Abort == True:
         GPIO.output(IO328, 0)
         os.system('sudo python /home/pi/Documents/Minion_scripts/Recovery_Sampler.py &')
 
