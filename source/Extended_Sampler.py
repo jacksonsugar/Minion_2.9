@@ -92,9 +92,9 @@ if not sensor.init():
     exit(1)
 
 # We have to read values from sensor to update pressure and temperature
-try sensor.read():
+if sensor.read():
     Pres_ini = sensor.pressure()
-except:
+else:
     Pres_ini = "Broken"
 
 print("Pressure: {} Bar").format(Pres_ini)
