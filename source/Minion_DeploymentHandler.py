@@ -61,7 +61,7 @@ update_time()
 i = 0
 wifi = 22
 light = 12
-IO328 = 11
+IO328 = 29
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
