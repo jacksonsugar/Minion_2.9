@@ -43,7 +43,7 @@ os.system('sudo hwclock -D -r')
 os.system('sudo hwclock -w')
 
 # Write deployment scripts to rc.local
-os.system("sudo sed -i '/# Print the IP/i/usr/bin/tvservice -o\n' /etc/rc.local")
+#os.system("sudo sed -i '/# Print the IP/i/usr/bin/tvservice -o\n' /etc/rc.local")
 os.system("sudo sed -i '/# Print the IP/isudo python /home/pi/Documents/Minion_scripts/Minion_DeploymentHandler.py &\n' /etc/rc.local")
 os.system("sudo sed -i '/# Print the IP/i#sudo python /home/pi/Documents/Minion_scripts/Keep_Me_Alive.py \n' /etc/rc.local")
 
