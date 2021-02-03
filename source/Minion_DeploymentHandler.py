@@ -149,8 +149,8 @@ if __name__ == '__main__':
     ## Check for wifi
 
         if check_wifi() == "Connected":
-            flash()
             kill_sampling(scriptNames)
+            flash()
             exit(0)
 
         else:
