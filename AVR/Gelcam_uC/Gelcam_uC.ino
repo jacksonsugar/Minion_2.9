@@ -1,5 +1,6 @@
 #include "LowPower.h"
 
+int SIG_LED = 2;
 int WIFI_SIG = 3;
 int Pi_on = 5;
 int IO = 6;
@@ -15,20 +16,24 @@ int MAX_Sample_Num = 3000;
 
 void setup(void)
 {
+  pinMode(SIG_LED, OUTPUT);
   pinMode(WIFI_SIG, INPUT_PULLUP);
   pinMode(IO, INPUT_PULLUP);
   pinMode(Pi_on, OUTPUT); 
   pinMode(Sampling_LED, OUTPUT);
   pinMode(STROBE, OUTPUT);
 
+  digitalWrite(SIG_LED, LOW);
   digitalWrite(Pi_on, LOW);
   digitalWrite(Sampling_LED, LOW);
   digitalWrite(STROBE, LOW);
 
   for(int i = 0; i < 3; i++){
     digitalWrite(Sampling_LED, HIGH);
+    digitalWrite(SIG_LED, HIGH);
     delay(400);
     digitalWrite(Sampling_LED, LOW);
+    digitalWrite(SIG_LED, LOW);
     delay(100);
   }
 }
