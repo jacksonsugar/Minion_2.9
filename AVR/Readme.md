@@ -1,6 +1,6 @@
 AVRdude argument for programming fuses
 
-avrdude -c usbtiny -p atmega328p -U lfuse:w:0xe2:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
+    avrdude -c usbtiny -p atmega328p -U lfuse:w:0xe2:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
 
 Dependencies and code for programming the HAT microcontroller
 
@@ -57,4 +57,3 @@ Steps for deployment
 
 9) Unplug Programmer
 
---> Note: Elapsed time programmed begins once shorting plug is installed. 
