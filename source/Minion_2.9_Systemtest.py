@@ -6,6 +6,9 @@ import RPi.GPIO as GPIO
 import time
 import os
 
+def str2bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
+
 def yes_no(answer):
     yes = set(['yes','y', 'ye', 'yeet', ''])
     no = set(['no','n'])
@@ -53,7 +56,7 @@ GPIO.output(data_rec, 0)
 GPIO.output(data_ext, 0)
 
 
-answer = input("Test Pi controlled lights [ENTER]")
+answer = raw_input("Test Pi controlled lights [ENTER]")
 
 
 j = 0
@@ -71,7 +74,7 @@ while j <= 2:
 
 GPIO.output(BURN, 1)
 
-answer = input("Check Burn Wire Voltage and press [ENTER] to continue")
+answer = raw_input("Check Burn Wire Voltage and press [ENTER] to continue")
 
 GPIO.output(BURN, 0)
 
@@ -84,6 +87,17 @@ configDir = data_config['Data_Dir']['Directory']
 configLoc = '{}/Minion_config.ini'.format(configDir)
 config = configparser.ConfigParser()
 config.read(configLoc)
+
+Ddays = int(config['Deployment_Time']['days'])
+Dhours = int(config['Deployment_Time']['hours'])
+
+Stime = config['Data_Sample']['Minion_sample_time']
+
+try:
+    float(test_string)
+    Stime = float(Stime)
+except:
+    Stime = float(.2)
 
 Srate = float(config['Sleep_cycle']['Minion_sleep_cycle'])
 Abort = str2bool(config['Mission']['Abort'])
