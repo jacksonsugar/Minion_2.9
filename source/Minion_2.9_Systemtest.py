@@ -158,6 +158,7 @@ if iniImg == True and answer == True:
         time.sleep(5)
         camera.stop_preview()
         GPIO.output(light, 0)
+        print("{}-TEST.jpg").format(samp_time)
 
     except:
         print("Camera error")
@@ -170,6 +171,8 @@ if iniTpp == True and answer == True:
 
     import tsys01
     import ms5837
+
+    NumSamples = 0
 
     MAX_Depth = float(config['Mission']['Max_Depth'])
     MAX_Depth = MAX_Depth*100.4  # Convert from meters to mBar
@@ -195,7 +198,7 @@ if iniTpp == True and answer == True:
 
     for dataNum in os.listdir('{}/minion_data/'.format(configDir)):
         if dataNum.endswith('_TEMPPRES.txt'):
-            samp_count = samp_count + 1
+            samp_count = int(samp_count) + 1
 
     samp_time = "{}-{}".format(samp_count, samp_time)
 
