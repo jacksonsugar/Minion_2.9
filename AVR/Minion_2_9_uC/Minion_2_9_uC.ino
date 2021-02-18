@@ -27,8 +27,10 @@ void setup(void)
 
   for(int i = 0; i < 3; i++){
     digitalWrite(Sampling_LED, HIGH);
+    digitalWrite(STROBE, HIGH);
     delay(400);
     digitalWrite(Sampling_LED, LOW);
+    digitalWrite(STROBE, LOW);
     delay(100);
   }
 }
